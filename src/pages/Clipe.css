@@ -1,0 +1,250 @@
+#root {
+  width: 100%;
+}
+
+body {
+  margin: 0;
+  background: #0b0b0b;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.clipe-container {
+  width: 100%;
+  min-height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 40px 0;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo {
+  width: 380px;
+  max-width: 90%;
+  margin-bottom: 70px;
+}
+
+video::-webkit-media-controls-fullscreen-button {
+  display: none;
+}
+
+video::-webkit-media-controls-picture-in-picture-button {
+  display: none;
+}
+
+.botao-mute {
+  margin-top: 15px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.mensagem-acerto {
+  color: white;
+  text-align: center;
+  margin-bottom: 50px;
+  margin-top: -20px;
+}
+.clipe-video {
+  width: 500px;
+  max-width: 90%;
+
+  border-radius: 20px;
+
+  transition: 0.4s;
+
+  pointer-events: none;
+
+  appearance: none;
+-webkit-appearance: none;
+
+  box-shadow:
+    0 0 40px rgba(255, 140, 0, 0.35);
+ 
+    
+}
+
+.clipe-video::-webkit-media-controls-overlay-play-button {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.clipe-video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.clipe-video::-internal-media-controls-overlay-cast-button {
+  display: none !important;
+}
+
+.clipe-video::-webkit-media-controls {
+  display: none !important;
+}
+
+.clipe-video::-webkit-media-controls {
+  display: none !important;
+}
+
+.clipe-video::-webkit-media-controls-enclosure {
+  display: none !important;
+}
+
+video::-webkit-media-controls {
+  display: none !important;
+}
+
+video::-webkit-media-controls-panel {
+  display: none !important;
+}
+
+video::-webkit-media-controls-play-button {
+  display: none !important;
+}
+
+video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+}
+
+video::-webkit-media-controls-overlay-play-button {
+  display: none !important;
+}
+
+video::-internal-media-controls-overlay-cast-button {
+  display: none !important;
+}
+
+.input-area {
+  position: relative;
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: 12px;
+
+  margin-top: 80px;
+}
+
+.input-area input {
+  width: 280px;
+  height: 42px;
+
+  padding: 0 14px;
+
+  border: none;
+  border-radius: 12px;
+
+  font-size: 16px;
+
+  box-sizing: border-box;
+
+  outline: none;
+}
+
+.input-area input:focus {
+  outline: 2px solid orange;
+}
+
+.input-area button {
+  height: 42px;
+
+  padding: 0 20px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: hotpink;
+  color: white;
+
+  cursor: pointer;
+
+  font-size: 16px;
+
+  box-sizing: border-box;
+
+  margin-top: 0;
+}
+
+.sugestoes {
+  position: absolute;
+
+  top: 52px;
+  left: 0;
+
+  width: 280px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 6px;
+
+  z-index: 999;
+
+  pointer-events: auto;
+}
+
+.sugestao-item {
+  background: #1b1b1b;
+
+  color: white;
+
+  padding: 10px 12px;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.sugestao-item:hover {
+  background: #333;
+}
+
+.sugestao-ativa {
+  background: hotpink;
+}
+
+.tentativas {
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+
+  margin-top: 25px;
+}
+
+.tentativa-item {
+  width: 250px;
+
+  padding: 12px;
+
+  border-radius: 12px;
+
+  color: white;
+
+  font-size: 18px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.erro {
+  background-color: crimson;
+}
+
+.acerto {
+  background-color: limegreen;
+}
