@@ -303,6 +303,11 @@ function Musica() {
   const [sugestaoSelecionada, setSugestaoSelecionada] = useState(-1)
   const [tocando, setTocando] = useState(false)
   const [perdeu, setPerdeu] = useState(false)
+  const hoje = new Date().toISOString().split('T')[0]
+
+const [jaJogouHoje] = useState(
+  localStorage.getItem('gagadle-dia-jogado') === hoje
+)
   const [tocandoFinal, setTocandoFinal] = useState(false)
   const [estatisticas, setEstatisticas] = useState(() => {
   const salvas = localStorage.getItem('estatisticas-gagadle')
@@ -473,6 +478,11 @@ setTentativas(novasTentativas)
 if (!acertou && novasTentativas.length >= 4) {
   setPerdeu(true)
 
+  localStorage.setItem(
+  'gagadle-dia-jogado',
+  hoje
+)
+
   setEstatisticas((stats) => {
     const novasStats = {
       ...stats,
@@ -498,6 +508,10 @@ if (!acertou && novasTentativas.length >= 4) {
   if (acertou) {
   setVenceu(true)
 
+  localStorage.setItem(
+  'gagadle-dia-jogado',
+  hoje
+)
   setEstatisticas((stats) => {
     const novaSequencia = stats.sequencia + 1
 
@@ -553,6 +567,22 @@ function compartilharResultado() {
 ${linhas}`
 
   navigator.clipboard.writeText(texto)
+}
+if (jaJogouHoje) {
+  return (
+    <div className="container">
+      <img
+        src="/logo.png"
+        alt="Gagadle"
+        className="logo"
+      />
+
+      <div className="vitoria">
+        <h2>You already completed today's challenge! 🎉</h2>
+        <p>Come back tomorrow for a new song.</p>
+      </div>
+    </div>
+  )
 }
 
   return (
