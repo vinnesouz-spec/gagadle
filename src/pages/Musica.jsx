@@ -16,7 +16,7 @@ function obterMusicaDoDia(musicas) {
   const dataInicial = new Date('2026-01-01')
 
   const hoje = new Date()
-hoje.setDate(hoje.getDate() + 21)
+hoje.setDate(hoje.getDate() + 30)
 
   const diasPassados = Math.floor(
     (hoje - dataInicial) / (1000 * 60 * 60 * 24)
@@ -24,6 +24,34 @@ hoje.setDate(hoje.getDate() + 21)
 
   const indiceDaFila =
     diasPassados % ordemDiaria.length
+
+  const indiceMusica =
+    ordemDiaria[indiceDaFila] % musicas.length
+
+  return musicas[indiceMusica]
+}
+
+function obterSegundaMusicaDoDia(musicas) {
+  const ordemDiaria = [
+    17, 4, 39, 8, 22, 1, 31, 14, 5, 27,
+    43, 2, 11, 35, 19, 7, 28, 0, 33, 24,
+    12, 45, 6, 30, 16, 41, 3, 26, 10, 37,
+    20, 47, 9, 29, 13, 34, 21, 42, 15, 32,
+    18, 44, 23, 38, 25, 40, 36, 46, 48, 49,
+    50, 51, 52, 53, 54, 55
+  ]
+
+  const dataInicial = new Date('2026-01-01')
+
+  const hoje = new Date()
+  hoje.setDate(hoje.getDate() + 21)
+
+  const diasPassados = Math.floor(
+    (hoje - dataInicial) / (1000 * 60 * 60 * 24)
+  )
+
+  const indiceDaFila =
+    (diasPassados + 1) % ordemDiaria.length
 
   const indiceMusica =
     ordemDiaria[indiceDaFila] % musicas.length
@@ -59,6 +87,24 @@ function obterMusicaDeOntem(musicas) {
 }
 
 function Musica() {
+  function salvarPartida(
+  musica = musicaAtual,
+  fase = faseMusica,
+  tentativasAtuais = tentativas,
+  faseAtualSalva = faseAtual,
+  resultado = null
+) {
+  localStorage.setItem(
+    chavePartida,
+    JSON.stringify({
+      musicaAtual: musica,
+      faseMusica: fase,
+      tentativas: tentativasAtuais,
+      faseAtual: faseAtualSalva,
+      resultado
+    })
+  )
+}
   const navigate = useNavigate()
   const musicas = [
     {
@@ -287,23 +333,63 @@ function Musica() {
     }
   ]
 
-  const [musicaAtual] = useState(
+  const hoje = new Date().toISOString().split('T')[0]
+  const chavePartida = `gagadle-partida-${hoje}`
+  const partidaSalva = JSON.parse(
+  localStorage.getItem(chavePartida) || 'null'
+)
+
+  const [musicaAtual, setMusicaAtual] = useState(
+  partidaSalva?.musicaAtual ||
   obterMusicaDoDia(musicas)
 )
 
+  const [faseMusica, setFaseMusica] = useState(
+  partidaSalva?.faseMusica || 1
+)
+  const [mostrarPopupProxima, setMostrarPopupProxima] = useState(false)
   const musicaOntem = obterMusicaDeOntem(musicas)
   const tempos = [1, 5, 10, 15]
   const partesDaBarra = [1, 4, 5, 5]
+    const emojis = [
+  '🌹',
+  '🌹',
+  '🌹',
+  '👠',
+  '👠',
+  '🎤',
+  '🎤',
+  '💿',
+  '✨',
+  '✨'
+]
+
+  const [mostrarCelebracao, setMostrarCelebracao] =
+  useState(false)
 
   const [resposta, setResposta] = useState('')
-  const [tentativas, setTentativas] = useState([])
-  const [venceu, setVenceu] = useState(false)
-  const [faseAtual, setFaseAtual] = useState(0)
+  
+ 
+  const [faseAtual, setFaseAtual] = useState(
+  partidaSalva?.faseAtual || 0
+)
   const [progresso, setProgresso] = useState(0)
   const [sugestaoSelecionada, setSugestaoSelecionada] = useState(-1)
   const [tocando, setTocando] = useState(false)
-  const [perdeu, setPerdeu] = useState(false)
-  const hoje = new Date().toISOString().split('T')[0]
+  const [tentativas, setTentativas] = useState(
+  partidaSalva?.tentativas || []
+)
+
+const [venceu, setVenceu] = useState(
+  partidaSalva?.resultado === 'vitoria'
+)
+
+const [perdeu, setPerdeu] = useState(
+  partidaSalva?.resultado === 'derrota'
+)
+  
+  
+  
 
 const [jaJogouHoje] = useState(
   localStorage.getItem('gagadle-dia-jogado') === hoje
@@ -323,6 +409,7 @@ const [jaJogouHoje] = useState(
   derrotas: 0,
   sequencia: 0,
   melhorSequencia: 0,
+  ultimaVitoria: null,
 
   tentativa1: 0,
   tentativa2: 0,
@@ -473,10 +560,31 @@ function tocarMusicaFinal() {
   const novasTentativas = [...tentativas, novaTentativa]
 
 setTentativas(novasTentativas)
+const proximaFase = acertou
+  ? faseAtual
+  : Math.min(
+      faseAtual + 1,
+      tempos.length - 1
+    )
+
+salvarPartida(
+  musicaAtual,
+  faseMusica,
+  novasTentativas,
+  proximaFase
+)
 
 
 if (!acertou && novasTentativas.length >= 4) {
   setPerdeu(true)
+
+  salvarPartida(
+  musicaAtual,
+  faseMusica,
+  novasTentativas,
+  faseAtual,
+  'derrota'
+)
 
   localStorage.setItem(
   'gagadle-dia-jogado',
@@ -506,23 +614,91 @@ if (!acertou && novasTentativas.length >= 4) {
   }
 
   if (acertou) {
+
+  if (faseMusica === 1) {
+    setMostrarCelebracao(true)
+
+  setTimeout(() => {
+    setMostrarCelebracao(false)
+  }, 3000)
+
+  setMostrarPopupProxima(true)
+
+  setTimeout(() => {
+    setMostrarPopupProxima(false)
+  }, 2500)
+
+  const segundaMusica =
+  obterSegundaMusicaDoDia(musicas)
+
+salvarPartida(
+  segundaMusica,
+  2,
+  [],
+  0,
+  null
+)
+
+  setMusicaAtual(segundaMusica)
+setFaseMusica(2)
+setTentativas([])
+setResposta('')
+setFaseAtual(0)
+
+setVenceu(false)
+setPerdeu(false)
+
+return
+}
+
   setVenceu(true)
+  setMostrarCelebracao(true)
+  console.log('CELEBRACAO')
+
+setTimeout(() => {
+  setMostrarCelebracao(false)
+}, 5000)
+
+  salvarPartida(
+  musicaAtual,
+  faseMusica,
+  novasTentativas,
+  faseAtual,
+  'vitoria'
+)
 
   localStorage.setItem(
-  'gagadle-dia-jogado',
-  hoje
-)
+    'gagadle-dia-jogado',
+    hoje
+  )
   setEstatisticas((stats) => {
-    const novaSequencia = stats.sequencia + 1
+    const hojeData = new Date()
+hojeData.setHours(0, 0, 0, 0)
+
+const ontemData = new Date(hojeData)
+ontemData.setDate(ontemData.getDate() - 1)
+
+let novaSequencia = 1
+
+if (stats.ultimaVitoria) {
+  const ultimaData = new Date(stats.ultimaVitoria)
+  ultimaData.setHours(0, 0, 0, 0)
+
+  if (ultimaData.getTime() === ontemData.getTime()) {
+    novaSequencia = stats.sequencia + 1
+  }
+}
 
     const novasStats = {
       ...stats,
       jogos: stats.jogos + 1,
       vitorias: stats.vitorias + 1,
       sequencia: novaSequencia,
+      ultimaVitoria: hoje,
       melhorSequencia: Math.max(
         stats.melhorSequencia,
         novaSequencia
+        
       )
     }
 
@@ -568,30 +744,18 @@ ${linhas}`
 
   navigator.clipboard.writeText(texto)
 }
-if (jaJogouHoje) {
-  return (
-    <div className="container">
-      <img
-        src="/logo.png"
-        alt="Gagadle"
-        className="logo"
-      />
 
-      <div className="vitoria">
-        <h2>You already completed today's challenge! 🎉</h2>
-        <p>Come back tomorrow for a new song.</p>
-      </div>
-    </div>
-  )
-}
 
   return (
   <div className="container">
+  
     <img
   src="/logo.png"
   alt="Gagadle"
   className="logo"
 />
+
+
 
 <div className="top-icons-bar">
 
@@ -639,6 +803,56 @@ if (jaJogouHoje) {
   </div>
 
 </div>
+
+
+
+<h3>Music {faseMusica}/2</h3>
+
+{mostrarPopupProxima && (
+  <div className="popup-proxima-musica">
+    <h2>🎉 Song 1 Complete!</h2>
+    <p>Get ready for Song 2/2</p>
+  </div>
+)}
+
+{mostrarCelebracao && (
+  <div className="celebracao">
+  
+
+    {[...Array(30)].map((_, i) => (
+      <span
+  key={`esq-${i}`}
+  className="emoji-esquerda"
+  style={{
+  top: `${35 + Math.random() * 30}%`,
+  '--x': `${400 + Math.random() * 500}px`,
+  '--y': `${300 + Math.random() * 500}px`,
+  '--altura': `${80 + Math.random() * 160}px`,
+  '--rot': `${720 + Math.random() * 720}deg`
+}}
+>
+        {emojis[Math.floor(Math.random() * emojis.length)]}
+      </span>
+    ))}
+
+    {[...Array(30)].map((_, i) => (
+      <span
+  key={`dir-${i}`}
+  className="emoji-direita"
+  style={{
+  top: `${35 + Math.random() * 30}%`,
+  '--x': `${-400 - Math.random() * 500}px`,
+  '--y': `${300 + Math.random() * 500}px`,
+  '--altura': `${80 + Math.random() * 160}px`,
+  '--rot': `${-720 - Math.random() * 720}deg`
+}}
+>
+        {emojis[Math.floor(Math.random() * emojis.length)]}
+      </span>
+    ))}
+
+  </div>
+)}
 
 <audio
           ref={audioRef}

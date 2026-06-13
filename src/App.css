@@ -1,9 +1,130 @@
-body {
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+
+  background: url("/imagens/fundo2.png") center center / cover no-repeat;
+
+  z-index: -999;
+
   margin: 0;
   background-color: #111;
   color: white;
   font-family: Arial, Helvetica, sans-serif;
 }
+
+body {
+  margin: 0;
+  background-color: #111;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+  
+  background-image: url('/imagens/fundo2.png')!important;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+.fundo-site {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  background-image: url('/imagens/fundo2.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  z-index: -1;
+}
+
+.celebracao {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.emoji-esquerda {
+  position: absolute;
+
+  left: 20px;
+  top: 50%;
+
+  animation: canhaoEsquerda 3s linear forwards;
+}
+
+.emoji-direita {
+  position: absolute;
+
+  right: 20px;
+  top: 50%;
+
+  animation: canhaoDireita 3s linear forwards;
+}
+
+@keyframes canhaoEsquerda {
+  0% {
+    transform:
+      translate(0, 0)
+      scale(2)
+      rotate(0deg);
+  }
+
+  35% {
+    transform:
+      translate(
+        calc(var(--x) * 0.4),
+        calc(var(--altura) * -1)
+      )
+      scale(2)
+      rotate(calc(var(--rot) * 0.3));
+  }
+
+  100% {
+    transform:
+      translate(
+        var(--x),
+        var(--y)
+      )
+      scale(1)
+      rotate(var(--rot));
+  }
+}
+
+@keyframes canhaoDireita {
+  0% {
+    transform:
+      translate(0, 0)
+      scale(2)
+      rotate(0deg);
+  }
+
+  35% {
+    transform:
+      translate(
+        calc(var(--x) * 0.4),
+        calc(var(--altura) * -1)
+      )
+      scale(2)
+      rotate(calc(var(--rot) * 0.3));
+  }
+
+  100% {
+    transform:
+      translate(
+        var(--x),
+        var(--y)
+      )
+      scale(1)
+      rotate(var(--rot));
+  }
+}
+
+
 
 #root {
   min-height: 100vh;
@@ -101,6 +222,54 @@ h1 {
   
 }
 
+.popup-proxima-musica {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  background: #111;
+  border: 3px solid #eb28d1;
+  border-radius: 16px;
+
+  padding: 25px 35px;
+  z-index: 9999;
+
+  text-align: center;
+
+  animation: popupFade 2.5s ease;
+}
+
+.popup-proxima-musica h2 {
+  margin: 0 0 10px 0;
+  color: white;
+}
+
+.popup-proxima-musica p {
+  margin: 0;
+  color: #ecaad3;
+}
+
+@keyframes popupFade {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -60%);
+  }
+
+  15% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+
+  85% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
 p {
   margin-bottom: -70px;
 }
@@ -129,6 +298,8 @@ button {
   font-size: 16px;
   cursor: pointer;
   margin-top: 100px;
+  border: 2px solid #b3afa8;
+  border-radius: 12px;
 }
 
 .tentativas {
@@ -295,7 +466,7 @@ audio {
 
   padding: 8px 16px;
 
-  border: 2px solid #d6b15c;
+  border: 2px solid #b3afa8;
   border-radius: 12px;
 
   background: rgba(0, 0, 0, 0.25);
@@ -457,6 +628,9 @@ audio {
   border-radius: 15px;
   margin-top: 15px;
   margin-bottom: -50px;
+  box-shadow: 0 0 30px rgba(212, 188, 188, 0.7);
+  border: 2px solid #b3afa8;
+  border-radius: 12px;
 }
 
 .gif-vitoria {
@@ -464,12 +638,18 @@ audio {
   border-radius: 15px;
   margin-top: 15px;
   margin-bottom: 20px;
+  box-shadow: 0 0 30px rgba(212, 188, 188, 0.7);
+  border: 2px solid #b3afa8;
+  border-radius: 12px;
 }
 
 .gif-primeira {
   width: 300px;
   border-radius: 15px;
   margin-top: 15px;
+  box-shadow: 0 0 30px rgba(212, 188, 188, 0.7);
+  border: 2px solid #b3afa8;
+  border-radius: 12px;
 }
 
 .estatisticas {
@@ -527,7 +707,7 @@ audio {
 
 
 .container {
-  background: rgba(27, 31, 59, 1);
+  background: rgba(27, 31, 59, 0.75);
   backdrop-filter: blur(8px);
   border: 2px solid rgba(255,255,255,0.08);
   border-radius: 30px;
@@ -535,6 +715,13 @@ audio {
   max-width: 600px;
   margin: 40px auto;
   box-shadow: 0 0 30px rgba(212, 188, 188, 0.7);
+  border: 2px solid #b3afa8;
+  border-radius: 12px;
+}
+
+html,
+body {
+  min-height: 100vh;
 }
 
 .stats-box {
@@ -626,3 +813,4 @@ audio {
   font-size: 28px;
   font-weight: bold;
 }
+
