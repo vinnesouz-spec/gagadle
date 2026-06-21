@@ -364,6 +364,11 @@ function Musica() {
   '✨'
 ]
 
+  const [aguardandoProximaMusica, setAguardandoProximaMusica] =
+  useState(
+    partidaSalva?.resultado === 'aguardando-segunda'
+  )
+
   const [mostrarCelebracao, setMostrarCelebracao] =
   useState(false)
 
@@ -381,13 +386,15 @@ function Musica() {
 )
 
 const [venceu, setVenceu] = useState(
-  partidaSalva?.resultado === 'vitoria'
+  partidaSalva?.resultado === 'vitoria' ||
+  partidaSalva?.resultado === 'aguardando-segunda'
 )
 
 const [perdeu, setPerdeu] = useState(
   partidaSalva?.resultado === 'derrota'
 )
   
+
   
   
 
@@ -575,6 +582,8 @@ salvarPartida(
 )
 
 
+
+
 if (!acertou && novasTentativas.length >= 4) {
   setPerdeu(true)
 
@@ -616,7 +625,7 @@ if (!acertou && novasTentativas.length >= 4) {
   if (acertou) {
 
   if (faseMusica === 1) {
-    setMostrarCelebracao(true)
+  setMostrarCelebracao(true)
 
   setTimeout(() => {
     setMostrarCelebracao(false)
@@ -628,27 +637,18 @@ if (!acertou && novasTentativas.length >= 4) {
     setMostrarPopupProxima(false)
   }, 2500)
 
-  const segundaMusica =
-  obterSegundaMusicaDoDia(musicas)
+  setVenceu(true)
+setAguardandoProximaMusica(true)
 
 salvarPartida(
-  segundaMusica,
-  2,
-  [],
-  0,
-  null
+  musicaAtual,
+  1,
+  novasTentativas,
+  faseAtual,
+  'aguardando-segunda'
 )
 
-  setMusicaAtual(segundaMusica)
-setFaseMusica(2)
-setTentativas([])
-setResposta('')
-setFaseAtual(0)
-
-setVenceu(false)
-setPerdeu(false)
-
-return
+  return
 }
 
   setVenceu(true)
@@ -724,6 +724,31 @@ audioRef.current.currentTime = 0
 setTocando(false)
 setTocandoFinal(false)
   setSugestaoSelecionada(-1)
+}
+
+
+function irParaProximaMusica() {
+  const segundaMusica =
+    obterSegundaMusicaDoDia(musicas)
+
+  salvarPartida(
+    segundaMusica,
+    2,
+    [],
+    0,
+    null
+  )
+
+  setMusicaAtual(segundaMusica)
+  setFaseMusica(2)
+  setTentativas([])
+  setResposta('')
+  setFaseAtual(0)
+
+  setVenceu(false)
+  setPerdeu(false)
+
+  setAguardandoProximaMusica(false)
 }
 
 function compartilharResultado() {
@@ -979,24 +1004,17 @@ ${linhas}`
         <h2>You got it right! It was {musicaAtual.nome} 🎉</h2>
         <p>You guessed it in {tentativas.length} attempt!</p>
 
-        <button
-  onClick={compartilharResultado}
-  className="compartilhar-btn"
->
-  Compartilhar
-</button>
-
-        <img
+<img
   src={
     tentativas.length === 1
       ? '/gifs/primeira.gif'
       : '/gifs/vitoria.gif'
   }
   className="gif-vitoria"
-  
-  
-
 />
+
+
+
 
 
 
@@ -1054,18 +1072,42 @@ ${linhas}`
 )}
 
     <div className="tentativas">
-      {[...tentativas].reverse().map((item, index) => (
-        <div
-          key={index}
-          className={item.correto ? 'acerto' : 'erro'}
-        >
-          {item.nome}
-        </div>
-      ))}
+  {[...tentativas].reverse().map((item, index) => (
+    <div
+      key={`${item.nome}-${index}`}
+      className={`
+        ${item.correto ? 'acerto' : 'erro'}
+        ${index === 0 ? 'flip' : ''}
+      `}
+    >
+      {item.nome}
     </div>
+  ))}
+</div>
+
+{aguardandoProximaMusica && venceu ? (
+  <button
+    className="botao-proxima-musica"
+    onClick={irParaProximaMusica}
+  >
+    Next Song ➜
+  </button>
+) : null}
+
+{faseMusica === 2 &&
+ (venceu || perdeu) &&
+ !aguardandoProximaMusica && (
+  <button
+    onClick={compartilharResultado}
+    className="compartilhar-btn"
+  >
+    Compartilhar
+  </button>
+)}
 
     
-{(venceu || perdeu) && (
+{(venceu || perdeu) &&
+ !aguardandoProximaMusica && (
   <div className="proximo-modo">
     <h2>Next mode:</h2>
 
@@ -1076,6 +1118,10 @@ ${linhas}`
 )}
 
 
+
+
+
+  
 
 
 

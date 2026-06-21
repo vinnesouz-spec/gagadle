@@ -39,6 +39,8 @@ video::-webkit-media-controls-picture-in-picture-button {
   display: none;
 }
 
+
+
 .botao-mute {
   margin-top: 15px;
   padding: 10px 18px;
@@ -51,8 +53,8 @@ video::-webkit-media-controls-picture-in-picture-button {
 .mensagem-acerto {
   color: white;
   text-align: center;
-  margin-bottom: 50px;
-  margin-top: -20px;
+  margin-bottom: -30px;
+  margin-top: 55px;
 }
 .clipe-video {
   width: 500px;
@@ -61,7 +63,7 @@ video::-webkit-media-controls-picture-in-picture-button {
   border-radius: 20px;
 
   transition: 0.4s;
-
+  margin-top: 100px;
   pointer-events: none;
 
   appearance: none;
@@ -243,8 +245,51 @@ video::-internal-media-controls-overlay-cast-button {
 
 .erro {
   background-color: crimson;
+  padding: 10px;
+  margin-top: 0px;
+  border-radius: 8px;
+  width: 350px;
+
+   animation: flipCard 0.6s ease;
+}
+
+.flip {
+  animation: flipCard 0.6s ease;
+}
+
+@keyframes flipCard {
+  0% {
+    transform: rotateX(90deg);
+    opacity: 0;
+  }
+
+  100% {
+    transform: rotateX(0deg);
+    opacity: 1;
+  }
 }
 
 .acerto {
-  background-color: limegreen;
+  background-color: green;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 8px;
+  width: 350px;
+  margin-bottom: 0px;
+ 
+  animation: flipCard 0.6s ease;
+}
+
+@keyframes flipCard {
+  0% {
+    transform: rotateX(0deg);
+  }
+
+  50% {
+    transform: rotateX(90deg);
+  }
+
+  100% {
+    transform: rotateX(0deg);
+  }
 }

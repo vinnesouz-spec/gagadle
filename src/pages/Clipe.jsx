@@ -1,5 +1,10 @@
 import { useState } from 'react'
 import './Clipe.css'
+import { FaChartBar } from 'react-icons/fa'
+import '../App.css'
+
+
+
 
 export default function Clipe() {
 
@@ -142,6 +147,30 @@ export default function Clipe() {
   const [tentativas, setTentativas] = useState([])
   const [sugestaoSelecionada, setSugestaoSelecionada] = useState(-1)
   const [mutado, setMutado] = useState(false)
+  const [mostrarStats, setMostrarStats] = useState(false)
+
+const [estatisticas] = useState(() => {
+  const salvas = localStorage.getItem(
+    'estatisticas-gagadle-clipes'
+  )
+
+  if (salvas) {
+    return JSON.parse(salvas)
+  }
+
+  return {
+    jogos: 0,
+    vitorias: 0,
+    derrotas: 0,
+    sequencia: 0,
+    melhorSequencia: 0,
+    tentativa1: 0,
+    tentativa2: 0,
+    tentativa3: 0,
+    tentativa4: 0,
+    tentativaDerrota: 0
+  }
+})
 
   const sugestoes = clipes.filter((clipe) => {
 
@@ -189,6 +218,8 @@ export default function Clipe() {
 
   const blur = Math.max(30 - tentativas.length * 6, 0)
 
+  
+
   return (
     <div className="clipe-container">
 
@@ -199,6 +230,47 @@ export default function Clipe() {
           alt="Logo"
           className="logo"
         />
+
+        <div className="top-icons-bar">
+
+  <button
+    className="botao-stats"
+    onClick={() => setMostrarStats(true)}
+  >
+    <FaChartBar />
+  </button>
+
+  <div className="streak-container">
+    <div className="streak-fire-wrapper">
+
+      <svg
+        className="streak-fire1"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M13.5 2C14 5 12 6.5 10.5 8C9 9.5 8 11 8 13.5C8 17.1 10.9 20 14.5 20C18.1 20 21 17.1 21 13.5C21 9.5 18.5 6.5 13.5 2Z"
+          fill="#ecaad3"
+        />
+      </svg>
+
+      <svg
+        className="streak-fire2"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M13 9C13.2 10.5 12.3 11.3 11.5 12.2C10.7 13 10.2 14 10.2 15.3C10.2 17.4 11.9 19 14 19C16.1 19 17.8 17.3 17.8 15.2C17.8 13 16.5 11.1 13 9Z"
+          fill="#eb28d1"
+        />
+      </svg>
+
+      <span className="streak-number">
+        {estatisticas.sequencia}
+      </span>
+
+    </div>
+  </div>
+
+</div>
 
         {acertou && (
   <h2 className="mensagem-acerto">
@@ -345,17 +417,20 @@ export default function Clipe() {
           {[...tentativas].reverse().map((tentativa, index) => (
 
             <div
-              key={index}
-
-              className={
-                tentativa.toLowerCase() ===
-                clipeAtual.nome.toLowerCase()
-                  ? 'tentativa-item acerto'
-                  : 'tentativa-item erro'
-              }
-            >
-              {tentativa}
-            </div>
+  key={`${tentativa}-${index}`}
+  className={`
+    tentativa-item
+    ${
+      tentativa.toLowerCase() ===
+      clipeAtual.nome.toLowerCase()
+        ? 'acerto'
+        : 'erro'
+    }
+    ${index === 0 ? 'flip' : ''}
+  `}
+>
+  {tentativa}
+</div>
 
           ))}
 
@@ -363,6 +438,69 @@ export default function Clipe() {
 
       </div>
 
+{mostrarStats && (
+  <div className="popup-fundo">
+    <div className="estatisticas">
+
+      <button
+        className="fechar-popup"
+        onClick={() => setMostrarStats(false)}
+      >
+        X
+      </button>
+
+      <div className="stats-box">
+
+        <h2>
+          <FaChartBar />
+        </h2>
+
+        <div className="stats-top">
+
+          <div>
+            <strong>{estatisticas.jogos}</strong>
+            <span>games</span>
+          </div>
+
+          <div>
+            <strong>
+              {estatisticas.jogos > 0
+                ? Math.round(
+                    (estatisticas.vitorias /
+                      estatisticas.jogos) *
+                      100
+                  )
+                : 0}
+              %
+            </strong>
+
+            <span>wins</span>
+          </div>
+
+          <div>
+            <strong>
+              {estatisticas.sequencia}
+            </strong>
+
+            <span>win streak</span>
+          </div>
+
+          <div>
+            <strong>
+              {estatisticas.melhorSequencia}
+            </strong>
+
+            <span>best streak</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+)}
     </div>
   )
 }
+
