@@ -138,18 +138,18 @@ export default function Clipe() {
       video: '/clipes/clipe-runway.mp4'
     }
   ]
-
+  
   const [clipeAtual] = useState(
     clipes[Math.floor(Math.random() * clipes.length)]
   )
-
+  
   const [resposta, setResposta] = useState('')
   const [tentativas, setTentativas] = useState([])
   const [sugestaoSelecionada, setSugestaoSelecionada] = useState(-1)
   const [mutado, setMutado] = useState(false)
   const [mostrarStats, setMostrarStats] = useState(false)
 
-const [estatisticas] = useState(() => {
+const [estatisticas, setEstatisticas] = useState(() => {
   const salvas = localStorage.getItem(
     'estatisticas-gagadle-clipes'
   )
@@ -199,6 +199,14 @@ const [estatisticas] = useState(() => {
 
     if (!respostaFinal) return
 
+    const clipeExiste = clipes.some(
+  (clipe) =>
+    clipe.nome.toLowerCase() ===
+    respostaFinal.toLowerCase()
+)
+
+if (!clipeExiste) return
+
     const jaTentou = tentativas.some(
       (tentativa) =>
         tentativa.toLowerCase() ===
@@ -211,6 +219,122 @@ const [estatisticas] = useState(() => {
       ...prev,
       respostaFinal
     ])
+
+    const acertouAgora =
+  respostaFinal.toLowerCase() ===
+  clipeAtual.nome.toLowerCase()
+
+  if (acertouAgora) {
+
+  const hoje = new Date()
+    .toISOString()
+    .split('T')[0]
+
+  setEstatisticas((stats) => {
+
+    const hojeData = new Date()
+    hojeData.setHours(0, 0, 0, 0)
+
+    const ontemData = new Date(hojeData)
+    ontemData.setDate(
+      ontemData.getDate() - 1
+    )
+
+    let novaSequencia = 1
+
+    if (stats.ultimaVitoria) {
+
+      const ultimaData =
+        new Date(stats.ultimaVitoria)
+
+      ultimaData.setHours(
+        0,
+        0,
+        0,
+        0
+      )
+
+      if (
+        ultimaData.getTime() ===
+        ontemData.getTime()
+      ) {
+        novaSequencia =
+          stats.sequencia + 1
+      }
+
+    }
+
+    const novasStats = {
+      ...stats,
+
+      jogos: stats.jogos + 1,
+      vitorias: stats.vitorias + 1,
+
+      sequencia: novaSequencia,
+
+      melhorSequencia: Math.max(
+        stats.melhorSequencia,
+        novaSequencia
+      ),
+
+      ultimaVitoria: hoje
+    }
+
+    const tentativaAcerto =
+      tentativas.length + 1
+
+    if (tentativaAcerto === 1)
+      novasStats.tentativa1++
+
+    if (tentativaAcerto === 2)
+      novasStats.tentativa2++
+
+    if (tentativaAcerto === 3)
+      novasStats.tentativa3++
+
+    if (tentativaAcerto === 4)
+      novasStats.tentativa4++
+
+    localStorage.setItem(
+      'estatisticas-gagadle-clipes',
+      JSON.stringify(novasStats)
+    )
+
+    return novasStats
+  })
+}
+
+if (acertou) return
+
+if (
+  !acertouAgora &&
+  tentativas.length + 1 >= 4
+) {
+
+  setEstatisticas((stats) => {
+
+    const novasStats = {
+      ...stats,
+
+      jogos: stats.jogos + 1,
+
+      derrotas:
+        stats.derrotas + 1,
+
+      tentativaDerrota:
+        (stats.tentativaDerrota || 0) + 1,
+
+      sequencia: 0
+    }
+
+    localStorage.setItem(
+      'estatisticas-gagadle-clipes',
+      JSON.stringify(novasStats)
+    )
+
+    return novasStats
+  })
+}
 
     setResposta('')
     setSugestaoSelecionada(-1)
