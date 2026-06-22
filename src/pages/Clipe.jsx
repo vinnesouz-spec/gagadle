@@ -138,7 +138,11 @@ export default function Clipe() {
       video: '/clipes/clipe-runway.mp4'
     }
   ]
-  
+
+  import { useRef, useState } from 'react'
+
+const videoRef = useRef(null)
+const [volume, setVolume] = useState(0.3)
   const [clipeAtual] = useState(
     clipes[Math.floor(Math.random() * clipes.length)]
   )
@@ -403,6 +407,8 @@ if (
 )}
 
         <video
+  ref={videoRef}
+  src={clipeAtual.video}
   ref={(video) => {
     if (video) {
       video.play().catch(() => {})
