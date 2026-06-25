@@ -1,7 +1,11 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import './Clipe.css'
 import { FaChartBar } from 'react-icons/fa'
 import '../App.css'
+import musicIcon from '../assets/music-icon.png'
+import clipIcon from '../assets/clip-icon.png'
+import lyricIcon from '../assets/lyric-icon.png'
+import { Link } from 'react-router-dom'
 
 
 
@@ -139,10 +143,10 @@ export default function Clipe() {
     }
   ]
 
-  import { useRef, useState } from 'react'
+  
 
 const videoRef = useRef(null)
-const [volume, setVolume] = useState(0.3)
+
   const [clipeAtual] = useState(
     clipes[Math.floor(Math.random() * clipes.length)]
   )
@@ -542,6 +546,24 @@ if (
 
         )}
 
+        <div className="mode-selector">
+
+  <div className="mode-line"></div>
+
+  <Link to="/music">
+    <img src={musicIcon} alt="Music" className="mode-icon" />
+  </Link>
+
+  <Link to="/clipe">
+    <img src={clipIcon} alt="Clip" className="mode-icon" />
+  </Link>
+
+  <Link to="/lyrics">
+    <img src={lyricIcon} alt="Lyrics" className="mode-icon" />
+  </Link>
+
+</div>
+
         <div className="tentativas">
 
           {[...tentativas].reverse().map((tentativa, index) => (
@@ -567,6 +589,9 @@ if (
         </div>
 
       </div>
+
+
+      
 
 {mostrarStats && (
   <div className="popup-fundo">
@@ -628,9 +653,16 @@ if (
       </div>
 
     </div>
+
+    
   </div>
+
+  
+  
 )}
+
     </div>
+    
   )
 }
 

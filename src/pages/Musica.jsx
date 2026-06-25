@@ -1,6 +1,10 @@
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { FaChartBar } from 'react-icons/fa'
+import musicIcon from '../assets/music-icon.png'
+import clipIcon from '../assets/clip-icon.png'
+import lyricIcon from '../assets/lyric-icon.png'
 import '../App.css'
 
 function obterMusicaDoDia(musicas) {
@@ -1229,7 +1233,25 @@ ${linhas}`
     </div>
   </div>
 )}
+<div className="mode-selector">
+  <div className="mode-line"></div>
+
+  <Link to="/music">
+    <img src={musicIcon} alt="Music" className="mode-icon active" />
+  </Link>
+
+  <Link to="/clipe">
+    <img src={clipIcon} alt="Clip" className="mode-icon" />
+  </Link> 
+
+  <Link to="/lyrics">
+    <img src={lyricIcon} alt="Lyrics" className="mode-icon" />
+  </Link>
+</div>
+
   </div>
+
+  
   
 )
 }
